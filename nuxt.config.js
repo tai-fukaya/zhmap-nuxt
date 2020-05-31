@@ -26,7 +26,9 @@ export default {
   /*
    ** Global CSS
    */
-  css: [],
+  css: [
+    '~/assets/style.css'
+  ],
   /*
    ** Plugins to load before mounting the App
    */
@@ -36,9 +38,9 @@ export default {
    */
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
-    '@nuxtjs/eslint-module',
+    // '@nuxtjs/eslint-module',
     // Doc: https://github.com/nuxt-community/stylelint-module
-    '@nuxtjs/stylelint-module'
+    // '@nuxtjs/stylelint-module'
   ],
   /*
    ** Nuxt.js modules
@@ -51,7 +53,10 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    // baseURL: 'http://localhost:3000/',
+    baseURL: 'https://tai-fukaya.github.io/zhmap-nuxt/',
+  },
   /*
    ** Build configuration
    */

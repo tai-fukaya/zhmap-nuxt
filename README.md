@@ -34,3 +34,8 @@ $ yarn generate
 $ yarn deploy
 ```
 もっとうまいやり方は、あるはず
+
+# 参考になりそうなサイト
+## Axios
+https://github.com/vueschool/nuxt-async-data/commits/master
+https://www.storyblok.com/tp/nuxt-js-multilanguage-website-tutorial
