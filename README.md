@@ -20,3 +20,17 @@ $ yarn generate
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+## gh-pages へのデプロイ
+nuxt.config.jsに以下を追加する
+```
+  router: {
+    base: '/zhmap-nuxt/'
+  },
+```
+```
+$ yarn build
+$ yarn generate
+$ yarn deploy
+```
+もっとうまいやり方は、あるはず

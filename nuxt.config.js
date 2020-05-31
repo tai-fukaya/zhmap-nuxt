@@ -1,5 +1,8 @@
 export default {
   mode: 'universal',
+  router: {
+    base: '/zhmap-nuxt/'
+  },
   /*
    ** Headers of the page
    */
