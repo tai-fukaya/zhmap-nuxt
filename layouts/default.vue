@@ -1,20 +1,23 @@
 <template>
   <div class="container">
-    <TheNavbar/>
+    <TheTitlebar/>
     <nuxt/>
   </div>
 </template>
 
 <script>
-  import TheNavbar from '@/components/TheNavbar'
+  import TheTitlebar from '@/components/TheTitlebar'
   export default {
     components: {
-      TheNavbar
+      TheTitlebar
     }
   }
 </script>
 
 <style>
+.container {
+  width: 100%;
+}
 .button--green {
   display: inline-block;
   border-radius: 4px;

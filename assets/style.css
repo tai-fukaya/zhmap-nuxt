@@ -3,12 +3,13 @@
   --teal: #068587;
   --teal-light: #4FB99F;
   --yellow: #F2B134;
-  --main-bg-color: coral;
+  --main-bg-color: #e2e2e2;
 }
 
 html {
-  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-  Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+  Roboto, 'Helvetica Neue', Arial, sans-serif; */
+  font-family: monospace;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -24,11 +25,12 @@ html {
   margin: 0;
 }
 
-
 body {
-  padding: 1rem;
-  background: var(--navy);
-  color: white;
+  padding: 0;
+  background: var(--main-bg-color);
+  color: black;
+
+  letter-spacing: 0.01rem;
 }
 
 a {
@@ -43,7 +45,6 @@ a:hover {
 
 .container {
   margin: 0 auto;
-  max-width: 900px;
 }
 
 .text-xs {
