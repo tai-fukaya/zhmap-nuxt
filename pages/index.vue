@@ -1,15 +1,15 @@
 <template>
   <div class="container">
-    <!-- 検索結果表示エリア -->
-    <!-- 地図データ表示エリア -->
-    <!-- 検索ワード入力エリア -->
+
     <!-- 使い方の表示エリア -->
+    <!-- 検索ワード入力エリア -->
     <div class="search-bar">
       <p class="search-bar-title">Search Word:</p><input v-model="searchWord" @keyup="searchMapData" placeholder="110101002" class="search-word">
     </div>
+    <!-- 検索結果表示エリア -->
     <div class="search-result">
-      <p><span class="search-result-title">Result:</span> {{searchedData.length}} / {{mapData.length}}</p>
-      <p><span class="search-result-title">Id:</span> {{firstSearchedData.displayId}}</p>
+      <p><span class="search-result-title">Result:</span> {{searchedIds.length}} / {{mapData.length}}</p>
+      <p><span class="search-result-title">Area Code:</span> {{firstSearchedData.displayId}}</p>
       <p><span class="search-result-title">Ministry:</span> {{firstSearchedData.ministry}}</p>
       <p><span class="search-result-title">Province:</span> {{firstSearchedData.province}}</p>
       <p><span class="search-result-title">City:</span> {{firstSearchedData.city}}</p>
@@ -17,10 +17,15 @@
       <p><span class="search-result-title">Latitude:</span> {{firstSearchedData.showLatitude.toFixed(7)}}</p>
       <p><span class="search-result-title">Longitude:</span> {{firstSearchedData.showLongitude.toFixed(7)}}</p>
     </div>
+
+    <!-- 地図データ表示エリア -->
+    <the-map-view :map-data="mapData" :searched-ids="searchedIds" />
   </div>
 </template>
 
 <script>
+import TheMapView from '~/components/TheMapView.vue'
+
 export default {
   head() {
     return {
@@ -33,11 +38,14 @@ export default {
       ]
     }
   },
+  components: {
+    TheMapView
+  },
   data: () => {
     return {
       searchWord: "",
       mapData: [], // これ自体は更新チェックの対象から外したい
-      searchedData: [],
+      searchedIds: [],
     }
   },
   async mounted() {
@@ -48,8 +56,9 @@ export default {
   },
   computed: {
     firstSearchedData() {
-      if (this.$data.searchedData.length > 0) {
-        return this.$data.searchedData[0]
+      if (this.$data.searchedIds.length > 0) {
+        let firstId = this.$data.searchedIds[0]
+        return this.$data.mapData.find(x => x.displayId === firstId)
       } else {
         return {
           displayId: "",
@@ -78,6 +87,7 @@ export default {
         if (splitted.length != 9) {
           console.log('error', splitted)
         }
+        // FIXME ここらへんも共通化する
         let item = {
           displayId: splitted[1].padEnd(12, '0'),
           searchId: splitted[1],
@@ -93,7 +103,6 @@ export default {
         }
         items.push(item)
       }
-      console.log(items[0].searchId, items[1].searchId)
       return items
     },
     searchMapData() {
@@ -111,7 +120,7 @@ export default {
           console.log(commands)
         }
       }
-      this.$data.searchedData = result;
+      this.$data.searchedIds = result.map(x => x.displayId)
     },
     searchById(items, searchId) {
       return items.filter(item => item.searchId.indexOf(searchId) === 0)
