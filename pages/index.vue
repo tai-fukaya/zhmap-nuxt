@@ -1,5 +1,10 @@
 <template>
   <div class="container">
+    <!-- タイトル -->
+    <!-- 検索結果表示エリア -->
+    <!-- 地図データ表示エリア -->
+    <!-- 検索ワード入力エリア -->
+    <!-- 使い方の表示エリア -->
     <div>
       <logo />
       <h1 class="title">
@@ -9,14 +14,7 @@
         Nuxt.js study
       </h2>
       <div class="links">
-        <nuxt-link
-          v-for="post in posts"
-          :to="{name: 'posts-id', params: {id: post.id}}"
-          :key="post.id"
-          class="button--grey"
-        >
-          {{post.title}}
-        </nuxt-link>
+        {{mapData.length}}
       </div>
     </div>
   </div>
@@ -40,10 +38,17 @@ export default {
       ]
     }
   },
+  data: () => {
+    return {
+      mapData: [], // これ自体は更新チェックの対象から外したい
+      seachedData: []
+    }
+  },
   async mounted() {
-    console.log('mounted')
-    const {data} = await this.getMapData()
-    this.$data.latlngdata = data
+    // 遅延読み込みでいいので、createdでやってもいいかも？
+    const {data} = await this.getCsvData()
+    const mapData = this.csvToMapData(data)
+    this.$data.mapData = mapData
   },
   computed: {
     posts () {
@@ -51,14 +56,61 @@ export default {
     }
   },
   methods: {
-    async getMapData() {
+    async getCsvData() {
       return await this.$axios.get(`${this.$axios.defaults.baseURL}data.csv`)
+    },
+    // FIXME store のほうに移す
+    csvToMapData(csvData) {
+      let items = []
+      let lines = csvData.split('\n')
+      for (let line in lines) {
+        let splitted = line.split(',')
+        // display_id, search_id, ministry, province, city, town, area_level, latitude, longitude
+        if (splitted.length === 9) {
+          console.log('error', splitted)
+        }
+        let item = {
+          displayId: splitted[0],
+          searchId: splitted[1],
+          ministry: splitted[2],
+          province: splitted[3],
+          city: splitted[4],
+          town: splitted[5],
+          areaLevel: parseInt(splitted[6]),
+          latitude: parseInt(splitted[7]),
+          longitude: parseInt(splitted[8]),
+        }
+        items.push(item)
+      }
+      return items
+    },
+    searchMapData(searchText) {
+      // 何も設定しない場合、search_idに検索をかける
+      // mはじまりは、ministryに、同様に、p, c, tに関しては、province, city, townを
+      // a始まりの場合、ministry, province, city, town全部にOR検索する
+      // m,p,c,tの場合は、AND検索とする（複数指定の場合）
+      console.log(searchText.split(','))
+    },
+    searchById(items, searchId) {
+
+    },
+    searchByMinistry(items, searchText) {
+
+    },
+    searchByProvince(items, searchText) {
+
+    },
+    searchByCity(items, searchText) {
+
+    },
+    searchByTown(items, searchText) {
+
     }
   }
 }
 // データの取得&表示
 // 入力値によって、色を変える
-// 入力値が一意になったら、その情報を表示する
+// 検索結果の一番はじめのデータを表示する
 // 入力されたデータの範囲でズームする
 // マウスオーバー時に、その周りのデータを表示する（情報を表示する）
 </script>
