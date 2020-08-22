@@ -1,6 +1,5 @@
-# study
-
-> Nuxt.js study
+中国の行政区画を番号で検索して、表示する
+ProcessingのBen Fry本にあったアメリカの地図検索の中国語版
 
 ## Build Setup
 
@@ -37,5 +36,5 @@ $ yarn deploy
 
 # 参考になりそうなサイト
 ## Axios
-https://github.com/vueschool/nuxt-async-data/commits/master
+https://github.com/vueschool/nuxt-async-data/commits/master  
 https://www.storyblok.com/tp/nuxt-js-multilanguage-website-tutorial
