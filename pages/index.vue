@@ -8,7 +8,7 @@
     </div>
     <!-- 検索結果表示エリア -->
     <div class="search-result">
-      <p><span class="search-result-title">Result:</span> {{searchedIds.length}} / {{mapData.length}}</p>
+      <p><span class="search-result-title">Result:</span> {{searchCount}} / {{mapData.length}}</p>
       <p><span class="search-result-title">Area Code:</span> {{firstSearchedData.displayId}}</p>
       <p><span class="search-result-title">Ministry:</span> {{firstSearchedData.ministry}}</p>
       <p><span class="search-result-title">Province:</span> {{firstSearchedData.province}}</p>
@@ -55,12 +55,11 @@ export default {
     this.$data.mapData = mapData
   },
   computed: {
+    searchCount() {
+      return this.$data.mapData.filter(item => item.searched).length
+    },
     firstSearchedData() {
-      if (this.$data.searchedIds.length > 0) {
-        let firstId = this.$data.searchedIds[0]
-        return this.$data.mapData.find(x => x.displayId === firstId)
-      } else {
-        return {
+      return this.$data.mapData.find(item => item.searched) || {
           displayId: "",
           ministry: "",
           province: "",
@@ -69,7 +68,6 @@ export default {
           areaLevel: "",
           showLatitude: 0.0,
           showLongitude: 0.0
-        }
       }
     }
   },
@@ -99,7 +97,8 @@ export default {
           latitude: parseInt(splitted[7]),
           longitude: parseInt(splitted[8]),
           showLatitude: parseInt(splitted[7])/ 10000000,
-          showLongitude: parseInt(splitted[8])/ 10000000
+          showLongitude: parseInt(splitted[8])/ 10000000,
+          searched: false,
         }
         items.push(item)
       }
@@ -110,17 +109,23 @@ export default {
       // mはじまりは、ministryに、同様に、p, c, tに関しては、province, city, townを
       // a始まりの場合、ministry, province, city, town全部にOR検索する
       // m,p,c,tの場合は、AND検索とする（複数指定の場合）
-      let keywords = event.target.value.split(',').map(x => x.trim()).filter(x => x !== '')
-      let result = keywords.length ? this.$data.mapData : []
-      for (let keyword of keywords) {
-        if (/^\d+$/.test(keyword)) {
-          result = this.searchById(result, keyword)
-        } else if (/^[ampct]\s*:/.test(keyword)) {
-          let commands = keyword.split(':').map(x => x.trim())
-          console.log(commands)
+      let functions = event.target.value.split(',').map(x => {
+        let commands = x.split(':').map(x => x.trim())
+        // console.log(commands)
+        if (/^\d+$/.test(commands[0])) {
+          return this.funcIsMatchById(commands[0])
         }
-      }
-      this.$data.searchedIds = result.map(x => x.displayId)
+        return
+      }).filter(x => x != null)
+      // console.log(functions)
+      let result = this.$data.mapData.map(item => {
+        item.searched = functions.find(func => func(item))
+        return item
+      })
+      this.$data.mapData = result
+    },
+    funcIsMatchById(searchId) {
+      return item => item.searchId.indexOf(searchId) === 0
     },
     searchById(items, searchId) {
       return items.filter(item => item.searchId.indexOf(searchId) === 0)

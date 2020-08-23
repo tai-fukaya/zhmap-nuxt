@@ -117,6 +117,9 @@ export default class GLMapView {
 		this.mapData.forEach((data, i) => {
 			let baseId = i * 3
       colors[baseId + 0] = colors[baseId + 1] = colors[baseId + 2] = 0.0
+      if (data.searched) {
+        colors[baseId + 0] = 0.7
+      }
 		})
     this.particle.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
     
