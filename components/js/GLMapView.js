@@ -2,27 +2,29 @@ import * as THREE from "three"
 
 export default class GLMapView {
   constructor($canvas) {
-    this.width = window.innerWidth
-    this.height = window.innerHeight
+    this.width = window.innerWidth * 2
+    this.height = window.innerHeight * 2
     this.mapData = []
     this.searchedIds = []
 		this.cameraFov = 60
     let cameraZpos = this.height / 2 * Math.sqrt(3)
-    
+
     // レンダラ
 		this.renderer = new THREE.WebGLRenderer({
       canvas: $canvas,
-      antialias: true,
+      // antialias: true,
       alpha: true
     })
 		this.renderer.setSize(this.width, this.height)
     this.renderer.setClearColor(0x000000, 0)
+    this.renderer.domElement.style.transform = "scale(0.5)"
+    this.renderer.domElement.style.transformOrigin = "left top"
 
 		// シーン
 		this.scene = new THREE.Scene()
 
 		// カメラ
-		this.camera = new THREE.PerspectiveCamera(this.cameraFov, this.width / this.height, 0.1, 1000)
+		this.camera = new THREE.PerspectiveCamera(this.cameraFov, this.width / this.height, 0.1, cameraZpos)
     this.camera.position.z = cameraZpos
 
     this.initGeometry()
@@ -40,8 +42,8 @@ export default class GLMapView {
   }
 	resize() {
     console.log("resize")
-    this.width = window.innerWidth
-    this.height = window.innerHeight
+    this.width = window.innerWidth * 2
+    this.height = window.innerHeight * 2
 
 		this.camera.aspect = this.width / this.height
 		this.camera.position.z = this.height / 2 * Math.sqrt(3)
@@ -63,15 +65,13 @@ export default class GLMapView {
 		let geometry = new THREE.BufferGeometry()
 		let material = new THREE.PointsMaterial({
 			size: 2,
-			// blending: THREE.AdditiveBlending,
 			vertexColors: THREE.VertexColors,
-			// opacity: 0.8,
-			depthTest: false,
-			transparent: true
+			// depthTest: false,
+			// transparent: true
 		})
 		let particle = new THREE.Points(geometry, material)
 		particle.position.x = -this.width / 2
-		particle.position.y = -this.height / 2
+    particle.position.y = -this.height / 2
 		particle.visible = false
     this.particle = particle
     
@@ -117,8 +117,8 @@ export default class GLMapView {
         }
       })
     }
-    minLat -= 100000000
-    maxLat += 100000000
+    minLat -= 80000000
+    maxLat += 80000000
     console.log(maxLat, minLat, maxLng, minLng)
 
     let dataSize = this.mapData.length
@@ -136,7 +136,7 @@ export default class GLMapView {
 		this.mapData.forEach((data, i) => {
       let baseId = i * 3
       // 色の設定
-      colors[baseId + 0] = colors[baseId + 1] = colors[baseId + 2] = 0.5
+      colors[baseId + 0] = colors[baseId + 1] = colors[baseId + 2] = 0.7
       if (data.searched) {
         colors[baseId + 0] = 1.0
         colors[baseId + 1] = 0.0

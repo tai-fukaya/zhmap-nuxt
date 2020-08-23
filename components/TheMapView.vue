@@ -8,8 +8,7 @@ import GLMapView from './js/GLMapView'
 // https://qiita.com/misaki_mofu/items/145ac26d600b429a6f8a
 export default {
   props: {
-    mapData: Array,
-    searchedIds: Array
+    mapData: Array
   },
   mounted() {
     this.canvas = new GLMapView(this.$refs.canvas)
@@ -17,9 +16,6 @@ export default {
   watch: {
     "mapData": function(n, o) {
       this.canvas.showSearchData(n, this.$props.searchedIds)
-    },
-    "searchedIds": function(n, o) {
-      this.canvas.showSearchData(this.$props.mapData, n)
     }
   }
 }

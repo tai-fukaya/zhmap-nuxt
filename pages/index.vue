@@ -4,7 +4,7 @@
     <!-- 使い方の表示エリア -->
     <!-- 検索ワード入力エリア -->
     <div class="search-bar">
-      <input v-model="searchWord" @keyup="searchMapData" placeholder="110101002(area code)" class="search-word">
+      <input v-model="searchWord" @keyup="searchMapData" placeholder="110101002(area code), k: Keyword, m: Ministry Name, p:, c:, t:" class="search-word">
     </div>
     <!-- 検索結果表示エリア -->
     <div class="search-result">
@@ -19,7 +19,7 @@
     </div>
 
     <!-- 地図データ表示エリア -->
-    <the-map-view :map-data="mapData" :searched-ids="searchedIds" />
+    <the-map-view :map-data="mapData" />
   </div>
 </template>
 
@@ -45,7 +45,6 @@ export default {
     return {
       searchWord: "",
       mapData: [], // これ自体は更新チェックの対象から外したい
-      searchedIds: [],
     }
   },
   async mounted() {
@@ -110,16 +109,29 @@ export default {
       // a始まりの場合、ministry, province, city, town全部にOR検索する
       // m,p,c,tの場合は、AND検索とする（複数指定の場合）
       let functions = event.target.value.split(',').map(x => {
-        let commands = x.split(':').map(x => x.trim())
+        let commands = x.split(':').map(x => x.trim()).filter(x => x !== '')
         // console.log(commands)
         if (/^\d+$/.test(commands[0])) {
           return this.funcIsMatchById(commands[0])
+        } else if (commands.length > 1) {
+          switch(commands[0]) {
+            case 'k':
+              return this.funcIsMatchByKeyword(commands[1])
+            case 'm':
+              return this.funcIsMatchByMinistry(commands[1])
+            case 'p':
+              return this.funcIsMatchByProvince(commands[1])
+            case 'c':
+              return this.funcIsMatchByCity(commands[1])
+            case 't':
+              return this.funcIsMatchByTown(commands[1])
+          }
         }
         return
       }).filter(x => x != null)
       // console.log(functions)
       let result = this.$data.mapData.map(item => {
-        item.searched = functions.find(func => func(item))
+        item.searched = functions.length ? functions.every(func => func(item)) : false
         return item
       })
       this.$data.mapData = result
@@ -127,20 +139,23 @@ export default {
     funcIsMatchById(searchId) {
       return item => item.searchId.indexOf(searchId) === 0
     },
-    searchById(items, searchId) {
-      return items.filter(item => item.searchId.indexOf(searchId) === 0)
+    funcIsMatchByMinistry(searchText) {
+      return item => item.ministry.indexOf(searchText) >= 0
     },
-    searchByMinistry(items, searchText) {
-
+    funcIsMatchByProvince(searchText) {
+      return item => item.province.indexOf(searchText) >= 0
     },
-    searchByProvince(items, searchText) {
-
+    funcIsMatchByCity(searchText) {
+      return item => item.city.indexOf(searchText) >= 0
     },
-    searchByCity(items, searchText) {
-
+    funcIsMatchByTown(searchText) {
+      return item => item.town.indexOf(searchText) >= 0
     },
-    searchByTown(items, searchText) {
-
+    funcIsMatchByKeyword(searchText) {
+      return item => item.ministry.indexOf(searchText) >= 0
+        || item.province.indexOf(searchText) >= 0
+        || item.city.indexOf(searchText) >= 0
+        || item.town.indexOf(searchText) >= 0
     }
   }
 }
