@@ -84,7 +84,10 @@ export default class GLMapView {
       minLat = Number.MAX_SAFE_INTEGER,
       maxLng = 0,
       minLng = Number.MAX_SAFE_INTEGER
+    
+    // 検索結果にあわせる
     this.mapData.forEach(data => {
+      if (!data.searched) return
       if (data.latitude > maxLat) {
         maxLat = data.latitude
       }
@@ -98,6 +101,22 @@ export default class GLMapView {
         minLng = data.longitude
       }
     })
+    if (maxLat === 0) {
+      this.mapData.forEach(data => {
+        if (data.latitude > maxLat) {
+          maxLat = data.latitude
+        }
+        if (data.latitude < minLat) {
+          minLat = data.latitude
+        }
+        if (data.longitude > maxLng) {
+          maxLng = data.longitude
+        }
+        if (data.longitude < minLng) {
+          minLng = data.longitude
+        }
+      })
+    }
     minLat -= 100000000
     maxLat += 100000000
     console.log(maxLat, minLat, maxLng, minLng)
@@ -112,25 +131,23 @@ export default class GLMapView {
     
     console.log(this.width, marginLeft, this.height, marginTop, longitudeCoeff, latitudeCoeff, coeff)
 
-    // 色の設定
-		let colors = new Float32Array(dataSize * 3)
+    let colors = new Float32Array(dataSize * 3)
+    let positions = new Float32Array(dataSize * 3)
 		this.mapData.forEach((data, i) => {
-			let baseId = i * 3
-      colors[baseId + 0] = colors[baseId + 1] = colors[baseId + 2] = 0.0
+      let baseId = i * 3
+      // 色の設定
+      colors[baseId + 0] = colors[baseId + 1] = colors[baseId + 2] = 0.5
       if (data.searched) {
-        colors[baseId + 0] = 0.7
+        colors[baseId + 0] = 1.0
+        colors[baseId + 1] = 0.0
+        colors[baseId + 2] = 0.0
       }
-		})
-    this.particle.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
-    
-    // 位置の設定
-		let positions = new Float32Array(dataSize * 3)
-		this.mapData.forEach((data, i) => {
-			let baseId = i * 3
+      // 位置の設定
 			positions[baseId + 0] = Math.floor(marginLeft + (data.longitude - minLng) * coeff)
 			positions[baseId + 1] = Math.floor(marginTop + (data.latitude - minLat) * coeff)
 			positions[baseId + 2] = 0
-    })
+		})
+    this.particle.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
     this.particle.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
     
     this.particle.position.x = -this.width / 2
