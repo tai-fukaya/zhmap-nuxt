@@ -65,7 +65,7 @@ export default class GLMapView {
 
   // 以下独自処理
   // FIXME 切り分ける
-  showSearchData(mapData, searchedIds) {
+  showSearchResult(mapData, searchedIds) {
     this.mapData = mapData
     this.searchedIds = searchedIds
     this.calcurateGeometry()

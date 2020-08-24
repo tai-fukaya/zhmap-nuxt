@@ -8,14 +8,14 @@ import GLMapView from './js/GLMapView'
 // https://qiita.com/misaki_mofu/items/145ac26d600b429a6f8a
 export default {
   props: {
-    mapData: {
+    mapItems: {
       type: Array,
       default: () => []
     }
   },
   watch: {
-    mapData(n, o) {
-      this.canvas.showSearchData(n, this.$props.searchedIds)
+    mapItems(n, o) {
+      this.canvas.showSearchResult(n, this.$props.searchedIds)
     }
   },
   mounted() {
