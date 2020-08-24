@@ -26,9 +26,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: [
-    '~/assets/style.css'
-  ],
+  css: ['~/assets/style.css'],
   /*
    ** Plugins to load before mounting the App
    */
@@ -55,7 +53,7 @@ export default {
    */
   axios: {
     // baseURL: 'http://localhost:3000/',
-    baseURL: 'https://tai-fukaya.github.io/zhmap-nuxt/',
+    baseURL: 'https://tai-fukaya.github.io/zhmap-nuxt/'
   },
   /*
    ** Build configuration

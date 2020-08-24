@@ -1,17 +1,17 @@
 <template>
   <div class="container">
-    <TheTitlebar/>
-    <nuxt/>
+    <TheTitlebar />
+    <nuxt />
   </div>
 </template>
 
 <script>
-  import TheTitlebar from '@/components/TheTitlebar'
-  export default {
-    components: {
-      TheTitlebar
-    }
+import TheTitlebar from '@/components/TheTitlebar'
+export default {
+  components: {
+    TheTitlebar
   }
+}
 </script>
 
 <style>
