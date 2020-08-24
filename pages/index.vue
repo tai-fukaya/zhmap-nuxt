@@ -26,6 +26,47 @@
 <script>
 import TheMapView from '~/components/TheMapView.vue'
 
+class MapItem {
+  constructor(
+    searchId = "",
+    ministry = "",
+    province = "",
+    city = "",
+    town = "",
+    areaLevel = 0,
+    latitude = 0,
+    longitude = 0
+  ) {
+    this.displayId = searchId ? searchId.padEnd('0', 12) : ''
+    this.searchId = searchId
+    this.ministry = ministry
+    this.province = province
+    this.city = city
+    this.town = town
+    this.areaLevel = areaLevel
+    this.latitude = latitude
+    this.longitude = longitude
+    this.showLatitude = latitude / 10000000
+    this.showLongitude = longitude / 10000000
+    this.searched = false
+  }
+  static parse(splitted) {
+    if (splitted.length != 8) {
+      console.log('error', splitted)
+      return
+    }
+    return new MapItem(
+      splitted[0],
+      splitted[1],
+      splitted[2],
+      splitted[3],
+      splitted[4],
+      parseInt(splitted[5]),
+      parseInt(splitted[6]),
+      parseInt(splitted[7])
+    )
+  }
+}
 export default {
   head() {
     return {
@@ -58,16 +99,7 @@ export default {
       return this.$data.mapData.filter(item => item.searched).length
     },
     firstSearchedData() {
-      return this.$data.mapData.find(item => item.searched) || {
-          displayId: "",
-          ministry: "",
-          province: "",
-          city: "",
-          town: "",
-          areaLevel: "",
-          showLatitude: 0.0,
-          showLongitude: 0.0
-      }
+      return this.$data.mapData.find(item => item.searched) || new MapItem()
     }
   },
   methods: {
@@ -79,27 +111,10 @@ export default {
       let items = []
       let lines = csvData.split('\n')
       for (let line of lines) {
-        let splitted = line.split(',')
-        // display_id, search_id, ministry, province, city, town, area_level, latitude, longitude
-        if (splitted.length != 8) {
-          console.log('error', splitted)
+        let item = MapItem.parse(line.split(','))
+        if (item) {
+          items.push(item)
         }
-        // FIXME ここらへんも共通化する
-        let item = {
-          displayId: splitted[0].padEnd(12, '0'),
-          searchId: splitted[0],
-          ministry: splitted[1],
-          province: splitted[2],
-          city: splitted[3],
-          town: splitted[4],
-          areaLevel: parseInt(splitted[5]),
-          latitude: parseInt(splitted[6]),
-          longitude: parseInt(splitted[7]),
-          showLatitude: parseInt(splitted[6])/ 10000000,
-          showLongitude: parseInt(splitted[7])/ 10000000,
-          searched: false,
-        }
-        items.push(item)
       }
       return items
     },
