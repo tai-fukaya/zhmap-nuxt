@@ -81,22 +81,22 @@ export default {
       for (let line of lines) {
         let splitted = line.split(',')
         // display_id, search_id, ministry, province, city, town, area_level, latitude, longitude
-        if (splitted.length != 9) {
+        if (splitted.length != 8) {
           console.log('error', splitted)
         }
         // FIXME ここらへんも共通化する
         let item = {
-          displayId: splitted[1].padEnd(12, '0'),
-          searchId: splitted[1],
-          ministry: splitted[2],
-          province: splitted[3],
-          city: splitted[4],
-          town: splitted[5],
-          areaLevel: parseInt(splitted[6]),
-          latitude: parseInt(splitted[7]),
-          longitude: parseInt(splitted[8]),
-          showLatitude: parseInt(splitted[7])/ 10000000,
-          showLongitude: parseInt(splitted[8])/ 10000000,
+          displayId: splitted[0].padEnd(12, '0'),
+          searchId: splitted[0],
+          ministry: splitted[1],
+          province: splitted[2],
+          city: splitted[3],
+          town: splitted[4],
+          areaLevel: parseInt(splitted[5]),
+          latitude: parseInt(splitted[6]),
+          longitude: parseInt(splitted[7]),
+          showLatitude: parseInt(splitted[6])/ 10000000,
+          showLongitude: parseInt(splitted[7])/ 10000000,
           searched: false,
         }
         items.push(item)
@@ -183,5 +183,9 @@ export default {
   border-bottom: 1px solid #000000;
 
   font-family: 'Courier New', monospace;
+}
+.search-word:focus {
+  outline: none;
+  border: 1px solid #000000;
 }
 </style>

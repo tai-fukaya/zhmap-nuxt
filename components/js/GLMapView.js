@@ -116,9 +116,10 @@ export default class GLMapView {
           minLng = data.longitude
         }
       })
+    } else {
+      minLat -= 80000000
+      maxLat += 80000000
     }
-    minLat -= 80000000
-    maxLat += 80000000
     console.log(maxLat, minLat, maxLng, minLng)
 
     let dataSize = this.mapData.length
